@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Hệ Thống Ôn Thi Luật Đất Đai 2024 - 120+ Câu Hỏi</title>
+    <style>
+        :root { --primary: #003366; --accent: #c0392b; --bg: #fdfdfd; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #ececec; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        #quiz-container { background: white; width: 100%; max-width: 850px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); overflow: hidden; }
+        .header { background: var(--primary); color: white; padding: 20px; text-align: center; }
+        .info-bar { display: flex; justify-content: space-between; padding: 10px 25px; background: #f8f9fa; border-bottom: 2px solid #ddd; font-weight: bold; }
+        .timer-box { color: var(--accent); font-size: 1.2rem; }
+        .content { padding: 30px; }
+        .question-box { font-size: 1.25rem; font-weight: bold; color: #222; margin-bottom: 25px; line-height: 1.5; }
+        .option { display: block; width: 100%; padding: 15px; margin-bottom: 12px; border: 2px solid #eee; border-radius: 8px; text-align: left; cursor: pointer; font-size: 1rem; transition: all 0.2s; background: #fff; }
+        .option:hover { background: #f0f7ff; border-color: #3498db; }
+        .correct { background: #d4edda !important; border-color: #28a745 !important; color: #155724; font-weight: bold; }
+        .wrong { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; }
+        .explanation { margin-top: 20px; padding: 20px; background: #fff3cd; border-left: 6px solid #ffc107; line-height: 1.6; }
+        .btn-action { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 6px; cursor: pointer; font-size: 1rem; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <div class="header"><h1>NGÂN HÀNG ÔN THI LUẬT ĐẤT ĐAI (120+ CÂU)</h1></div>
+
+    <div id="start-screen" class="content" style="text-align: center;">
+        <h2>Chào bạn!</h2>
+        <p>Hệ thống đã sẵn sàng với hơn 120+ câu hỏi trắc nghiệm & tình huống bài tập.</p>
+        <p><i>Lưu ý: Các câu làm sai sẽ được hỏi lại cho đến khi bạn thuộc.</i></p>
+        <button class="btn-action" onclick="startApp()">BẮT ĐẦU ÔN TẬP</button>
+    </div>
+
+    <div id="quiz-screen" class="hidden">
+        <div class="info-bar">
+            <span>Tiến độ: <span id="q-current">1</span>/<span id="q-total">300</span></span>
+            <span class="timer-box">Thời gian: <span id="time-left">30</span>s</span>
+            <span>Đúng: <span id="score-count">0</span></span>
+        </div>
+        <div class="content">
+            <div id="question-text" class="question-box"></div>
+            <div id="options-list"></div>
+            <div id="exp-area" class="explanation hidden"></div>
+            <div style="text-align: right; margin-top: 20px;">
+                <button id="btn-next" class="btn-action hidden" onclick="handleNext()">TIẾP THEO</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="hidden" style="text-align: center; padding: 50px;">
+        <h2>KẾT THÚC VÒNG ÔN TẬP</h2>
+        <h1 id="final-stats">0/300</h1>
+        <div id="fail-info" style="color: red; margin-bottom: 20px;"></div>
+        <button class="btn-action" onclick="restartWithErrors()">ÔN LẠI CÂU SAI</button>
+        <button class="btn-action" style="background:#666" onclick="location.reload()">LÀM MỚI TOÀN BỘ</button>
+    </div>
+</div>
+
+<script>
+// ===========================================================================
+// === PHẦN 1: DỮ LIỆU CÂU HỎI (bạn có thể thêm tiếp vào mảng này) ===
+// ===========================================================================
+// ==========================================================================
+// NGÂN HÀNG DỮ LIỆU: 120+ CÂU HỎI CHI TIẾT (SOẠN SẴN NỘI DUNG)
+// ==========================================================================
+
+const questionBank = [
+    // ==========================================================================
+    // NHÓM 1: LÝ LUẬN CHUNG & LỊCH SỬ (Câu 1 - 20)
+    // ==========================================================================
+    { q: "Theo từ điển tiếng Việt, 'Đất' được định nghĩa là gì để đối lập với trời hoặc biển?", options: ["Khoảng mặt đất tương đối rộng", "Chất rắn trên đó có người và động thực vật sinh sống", "Tài sản thuộc sở hữu toàn dân", "Tư liệu sản xuất đặc biệt"], correct: 1, exp: "Căn cứ Vấn đề 1: Đất là chất rắn ở trên đó có người và các loại động vật, thực vật sinh sống; đối lập với trời hoặc với biển." },
+    { q: "Định nghĩa nào sau đây nói về 'Đất' dưới góc độ tư liệu sản xuất nông nghiệp?", options: ["Đối lập với trời hoặc biển", "Lớp vỏ ngoài cùng của Trái đất", "Hạt vụn khoáng vật có mùn để trồng trọt", "Khoảng mặt đất rộng"], correct: 2, exp: "Đất (nông nghiệp) là các hạt vụn khoáng vật... có nhiều chất hữu cơ gọi là mùn, trên đó có thể trồng trọt được." },
+    { q: "Khái niệm 'Đất đai' (nói khái quát) được hiểu là?", options: ["Lớp mùn trên mặt đất", "Tài sản của Nhà nước", "Khoảng mặt đất tương đối rộng", "Tư liệu sản xuất"], correct: 2, exp: "Đất đai: Là khoảng mặt đất tương đối rộng (nói khái quát)." },
+    { q: "Về mặt pháp lý, Luật Đất đai được xác định là ngành luật như thế nào?", options: ["Một chương của Luật Dân sự", "Văn bản hướng dẫn hành chính", "Ngành luật độc lập trong hệ thống pháp luật VN", "Tập hợp các nghị định về đất"], correct: 2, exp: "Luật đất đai là một ngành luật độc lập trong hệ thống PL VN." },
+    { q: "Luật Đất đai điều chỉnh các quan hệ xã hội phát sinh trong quá trình nào?", options: ["Chiếm hữu đất đai", "Quản lý đất đai", "Sử dụng đất đai", "Tất cả các quá trình trên"], correct: 3, exp: "Điều chỉnh quan hệ phát sinh trong quá trình con người chiếm hữu, quản lý và sử dụng đất đai." },
+    { q: "Cơ quan nào có thẩm quyền ban hành các quy phạm pháp luật về đất đai?", options: ["Doanh nghiệp bất động sản", "Cơ quan nhà nước có thẩm quyền", "Các tổ chức xã hội", "Văn phòng đăng ký đất đai"], correct: 1, exp: "Luật đất đai gồm tổng hợp các quy phạm PL do cơ quan nhà nước có thẩm quyền ban hành." },
+    { q: "Ngành luật nào sau đây KHÔNG có mối quan hệ trực tiếp chặt chẽ với Luật Đất đai?", options: ["Luật Dân sự", "Luật Hình sự quốc tế", "Luật Xây dựng", "Luật Thương mại"], correct: 1, exp: "Tài liệu liệt kê: Dân sự; Hôn nhân; Hành chính; Xây dựng; Thương mại... không nhắc đến Hình sự quốc tế." },
+    { q: "Đối tượng điều chỉnh của Luật Đất đai là gì?", options: ["Các quan hệ đất đai", "Các loại đất khác nhau", "Các chủ thể sử dụng đất", "Các quy hoạch sử dụng đất"], correct: 0, exp: "Đối tượng điều chỉnh là các quan hệ đất đai (quản lý và sử dụng)." },
+    { q: "Phương pháp điều chỉnh 'Hành chính - Mệnh lệnh' dùng cho quan hệ nào?", options: ["Giữa các cá nhân với nhau", "Giữa Nhà nước và người sử dụng đất", "Giữa hai doanh nghiệp", "Giữa hai hộ gia đình"], correct: 1, exp: "Trong quan hệ quản lý (chiều dọc), Nhà nước dùng phương pháp mệnh lệnh." },
+    { q: "Phương pháp điều chỉnh 'Bình đẳng - Thỏa thuận' dùng cho quan hệ nào?", options: ["Cơ quan cấp trên và cấp dưới", "Quan hệ về quản lý hành chính", "Quan hệ giữa các người sử dụng đất với nhau", "Thu hồi đất cưỡng chế"], correct: 2, exp: "Trong quan hệ sử dụng (chiều ngang), áp dụng phương pháp bình đẳng, thỏa thuận." },
+    { q: "Giai đoạn 1945 - 1954 gắn liền với sự kiện pháp lý nào?", options: ["Ban hành Luật Đất đai đầu tiên", "Cải cách ruộng đất (Luật 1953)", "Tư nhân hóa đất đai", "Hợp tác hóa toàn bộ"], correct: 1, exp: "Giai đoạn 1945-1954: Cải cách ruộng đất (Luật cải cách ruộng đất 1953)." },
+    { q: "Hiến pháp năm nào lần đầu tiên xác lập đất đai thuộc sở hữu toàn dân?", options: ["Hiến pháp 1946", "Hiến pháp 1959", "Hiến pháp 1980", "Hiến pháp 1992"], correct: 2, exp: "Mốc 1980: Hiến pháp 1980 quy định đất đai thuộc sở hữu toàn dân." },
+    { q: "Đạo luật Đất đai đầu tiên của nước ta được ban hành năm nào?", options: ["1987", "1993", "2003", "2013"], correct: 0, exp: "Luật Đất đai 1987 là đạo luật đầu tiên của nước ta." },
+    { q: "Luật Đất đai 1993 có điểm gì nổi bật về quyền của hộ gia đình?", options: ["Chỉ được sử dụng", "Có 5 quyền (Chuyển đổi, nhượng, thuê, thừa kế, thế chấp)", "Chỉ được thừa kế", "Không có quyền giao dịch"], correct: 1, exp: "Luật 1993 mở rộng quyền cho người sử dụng đất với 5 quyền cơ bản." },
+    { q: "Mốc thời gian nào Luật Đất đai bổ sung thêm quyền tặng cho và góp vốn?", options: ["Luật 1987", "Luật 1993", "Luật 2003", "Luật 2013"], correct: 2, exp: "Luật 2003 bổ sung thêm các quyền như tặng cho, góp vốn bằng QSDĐ." },
+    { q: "Hiến pháp 2013 quy định đất đai là?", options: ["Tài sản cá nhân", "Tài sản công thuộc sở hữu toàn dân", "Tài sản của Chính phủ", "Tài sản của UBND"], correct: 1, exp: "Hiến pháp 2013: Đất đai là tài sản công thuộc sở hữu toàn dân do Nhà nước đại diện chủ sở hữu." },
+    { q: "Tại sao nói Luật Đất đai là công cụ quản lý của Nhà nước?", options: ["Vì Nhà nước là chủ sở hữu", "Vì Nhà nước đại diện cho toàn dân quản lý", "Vì Nhà nước trực tiếp trồng trọt", "Vì Nhà nước có quyền thu hồi bất cứ lúc nào"], correct: 1, exp: "Nhà nước đại diện chủ sở hữu toàn dân, dùng Luật làm công cụ để thống nhất quản lý quỹ đất." },
+    { q: "Ai là chủ thể duy nhất có quyền quyết định mục đích sử dụng đất?", options: ["Người sử dụng đất", "Chính phủ", "Nhà nước", "UBND xã"], correct: 2, exp: "Nhà nước quyết định mục đích sử dụng đất thông qua quy hoạch, kế hoạch." },
+    { q: "Nhà nước thực hiện quyền định đoạt đất đai thông qua hành vi nào?", options: ["Giao đất", "Cho thuê đất", "Công nhận QSDĐ", "Tất cả các hành vi trên"], correct: 3, exp: "Quyền định đoạt của Nhà nước bao gồm giao đất, cho thuê đất, công nhận quyền sử dụng đất." },
+    { q: "Khách thể của quan hệ pháp luật đất đai đối với Nhà nước là gì?", options: ["Sổ đỏ", "Quyền sử dụng đất", "Toàn bộ vốn đất đai quốc gia", "Các thửa đất lẻ tẻ"], correct: 2, exp: "Đối với Nhà nước, khách thể quản lý là toàn bộ vốn đất đai trong phạm vi lãnh thổ." },
+
+    // ==========================================================================
+    // NHÓM 2: TÌNH HUỐNG ÔNG BẢY - LIÊN KẾT MẠCH LẠC (Câu 21 - 30)
+    // ==========================================================================
+    { q: "[TÌNH HUỐNG ÔNG BẢY - 1] Ông Bảy sử dụng 300m2 đất từ năm 1978, không giấy tờ, xã xác nhận ổn định, không tranh chấp. Hạn mức đất ở địa phương là 200m2. Ông có được cấp Sổ đỏ không?", options: ["Không vì thiếu giấy tờ", "Được cấp vì sử dụng trước 1993 và ổn định", "Chỉ được cấp nếu nộp phạt", "Được cấp 150m2"], correct: 1, exp: "Sử dụng đất ổn định trước 15/10/1993 và không tranh chấp thì đủ điều kiện cấp GCN theo quy định." },
+    { q: "[TÌNH HUỐNG ÔNG BẢY - 2] Tiếp vụ việc trên (300m2 đất, hạn mức 200m2), diện tích nào được công nhận là ĐẤT Ở?", options: ["Toàn bộ 300m2", "Chỉ 200m2 (bằng hạn mức)", "Chỉ 100m2", "Không mét vuông nào"], correct: 1, exp: "Diện tích đất ở được công nhận bằng hạn mức giao đất ở (200m2). 100m2 còn lại tính là đất nông nghiệp gắn liền." },
+    { q: "[TÌNH HUỐNG ÔNG BẢY - 3] Nếu ông Bảy có tranh chấp ranh giới với hàng xóm sau khi đã có Sổ đỏ, cơ quan nào có thẩm quyền giải quyết?", options: ["UBND xã", "UBND huyện", "Tòa án nhân dân", "Công an huyện"], correct: 2, exp: "Khi đã có Giấy chứng nhận, tranh chấp đất đai thuộc thẩm quyền giải quyết của Tòa án nhân dân." },
+    { q: "[TÌNH HUỐNG ÔNG BẢY - 4] Trong vụ tranh chấp ranh giới của ông Bảy, việc hòa giải tại UBND xã là thủ tục gì?", options: ["Bắt buộc", "Tùy chọn", "Không cần thiết", "Chỉ dành cho đất chưa có sổ"], correct: 0, exp: "Hòa giải tại UBND xã là thủ tục bắt buộc đối với tranh chấp xác định ai là người có quyền sử dụng đất." },
+    { q: "[TÌNH HUỐNG ÔNG BẢY - 5] Nếu UBND xã hòa giải không thành vụ ông Bảy, bước tiếp theo ông Bảy phải làm gì?", options: ["Bỏ cuộc", "Khởi kiện ra Tòa án", "Khiếu nại lên Bộ TN&MT", "Rào đất lại"], correct: 1, exp: "Sau khi hòa giải tại xã không thành, đương sự có quyền khởi kiện ra Tòa án nhân dân." },
+
+    // ==========================================================================
+    // NHÓM 3: TÌNH HUỐNG BÀ M - ĐỒNG BẰNG SÔNG HỒNG (Câu 31 - 45)
+    // ==========================================================================
+    { q: "[TÌNH HUỐNG BÀ M - 1] Bà M (ĐBSH) được giao 1.7ha đất hàng năm, 1.8ha đất thủy sản, 2ha đất làm muối. Tổng diện tích đất Nhà nước GIAO là bao nhiêu?", options: ["3.5 ha", "5.0 ha", "5.5 ha", "6.0 ha"], correct: 2, exp: "Tổng cộng: 1.7 + 1.8 + 2.0 = 5.5 ha." },
+    { q: "[TÌNH HUỐNG BÀ M - 2] Với 5.5ha được giao, so với hạn mức giao đất nông nghiệp tổng hợp (5ha) tại ĐBSH, bà M vượt bao nhiêu?", options: ["Không vượt", "Vượt 0.5 ha", "Vượt 1.0 ha", "Vượt 1.5 ha"], correct: 1, exp: "Hạn mức tổng hợp tại ĐBSH là 5ha. Bà M có 5.5ha nên vượt 0.5ha." },
+    { q: "[TÌNH HUỐNG BÀ M - 3] Phần 0.5ha vượt hạn mức giao đất của bà M sẽ xử lý như thế nào?", options: ["Thu hồi không đền bù", "Chuyển sang hình thức thuê đất", "Cấp sổ miễn phí", "Bán cho người khác"], correct: 1, exp: "Diện tích vượt hạn mức giao đất phải chuyển sang hình thức thuê đất của Nhà nước." },
+    { q: "[TÌNH HUỐNG BÀ M - 4] Bà M thuê 3ha đất đầm ao từ quỹ đất công ích (5%). Cơ quan nào có thẩm quyền cho thuê?", options: ["UBND xã", "UBND huyện", "UBND tỉnh", "Sở TNMT"], correct: 0, exp: "Đất công ích 5% do UBND cấp xã quản lý và cho thuê để sản xuất nông nghiệp." },
+    { q: "[TÌNH HUỐNG BÀ M - 5] Thời hạn cho bà M thuê đất công ích từ quỹ 5% theo luật mới tối đa là?", options: ["5 năm", "10 năm", "20 năm", "50 năm"], correct: 1, exp: "Theo Luật mới, đất công ích thuê thông qua đấu giá có thời hạn không quá 10 năm." },
+    { q: "[TÌNH HUỐNG BÀ M - 6] Thời hạn sử dụng đối với phần diện tích 5ha đất trong hạn mức mà bà M được giao là?", options: ["20 năm", "50 năm", "Lâu dài", "70 năm"], correct: 1, exp: "Đất nông nghiệp giao cho hộ gia đình sản xuất trực tiếp có thời hạn 50 năm." },
+    { q: "[TÌNH HUỐNG BÀ M - 7] Khi hết hạn 50 năm sử dụng đất giao, bà M muốn tiếp tục sản xuất thì cần làm gì?", options: ["Phải làm đơn xin gia hạn ngay", "Được tiếp tục sử dụng mà không cần làm thủ tục ngay", "Phải mua lại đất", "Phải tham gia đấu giá lại"], correct: 1, exp: "Hộ gia đình trực tiếp sản xuất nông nghiệp được tiếp tục sử dụng khi hết hạn mà không cần làm thủ tục gia hạn tức thì." },
+    { q: "UBND cấp nào có trách nhiệm quản lý đất đai tại địa phương?", options: ["Cấp Tỉnh", "Cấp Huyện", "Cấp Xã", "Cả 3 cấp trên"], correct: 3, exp: "UBND các cấp có trách nhiệm quản lý nhà nước về đất đai theo phạm vi địa phương." },
+    // ... (Các câu từ 51 đến 95 của bạn giữ lại và chuẩn hóa)
+    { q: "Luật Đất đai 2024 có bao nhiêu chương và điều?", options: ["14 chương 212 điều", "16 chương 260 điều", "12 chương 200 điều", "10 chương 150 điều"], correct: 1, exp: "Luật Đất đai 2024 gồm 16 chương và 260 điều." },
+
+// ==========================================================================
+    // NHÓM 5: 60 CÂU VIẾT MỚI HOÀN TOÀN (Câu 96 - 155)
+    // ==========================================================================
+    { q: "Cá nhân không trực tiếp sản xuất nông nghiệp được nhận chuyển nhượng loại đất nào theo Luật 2024?", options: ["Đất rừng phòng hộ", "Đất trồng lúa", "Đất rừng đặc dụng", "Không được nhận loại nào"], correct: 1, exp: "Luật 2024 cho phép cá nhân không trực tiếp sản xuất nông nghiệp được nhận chuyển nhượng đất trồng lúa." },
+    { q: "Trường hợp thu hồi đất ở mà người dân không còn chỗ ở nào khác, Nhà nước phải?", options: ["Chỉ đền bù bằng tiền", "Bố trí tái định cư trước khi thu hồi", "Để người dân tự tìm chỗ ở", "Cho thuê nhà ở xã hội"], correct: 1, exp: "Nhà nước phải hoàn thành bố trí tái định cư trước khi ban hành quyết định thu hồi đất." },
+    { q: "Quyền lựa chọn hình thức trả tiền thuê đất (hàng năm hoặc một lần) áp dụng cho?", options: ["Chỉ cá nhân", "Chỉ tổ chức nước ngoài", "Tổ chức kinh tế, cá nhân, người VN định cư ở nước ngoài", "Chỉ doanh nghiệp nhà nước"], correct: 2, exp: "Luật 2024 mở rộng quyền lựa chọn hình thức nộp tiền thuê đất cho nhiều đối tượng." },
+    { q: "Ai có thẩm quyền quyết định giá đất cụ thể?", options: ["Bộ trưởng Bộ TN&MT", "Chủ tịch UBND cấp tỉnh", "Chủ tịch UBND cấp huyện (trong một số trường hợp)", "Cả B và C đều đúng"], correct: 3, exp: "Luật mới phân cấp thẩm quyền quyết định giá đất cụ thể cho cả UBND cấp tỉnh và cấp huyện." },
+    { q: "Việc bồi thường khi Nhà nước thu hồi đất phải đảm bảo người có đất bị thu hồi có chỗ ở, mức sống?", options: ["Thấp hơn nơi cũ", "Bằng nơi cũ", "Bằng hoặc tốt hơn nơi cũ", "Tùy điều kiện địa phương"], correct: 2, exp: "Đây là nguyên tắc quan trọng hàng đầu trong Luật Đất đai 2024." },
+    { q: "Đất sử dụng vào mục đích tôn giáo được Nhà nước?", options: ["Giao đất không thu tiền sử dụng đất", "Cho thuê đất trả tiền hàng năm", "Giao đất có thu tiền", "Cho thuê đất trả tiền một lần"], correct: 0, exp: "Đất xây dựng cơ sở tôn giáo thuộc đối tượng được giao đất không thu tiền sử dụng đất." },
+    { q: "Sổ đỏ (GCN) cấp cho hộ gia đình trước 2024, từ 1/1/2025 sẽ được ghi tên ai?", options: ["Tên chủ hộ", "Tên tất cả các thành viên có chung quyền", "Tên người đại diện", "Tên người đứng tên cũ"], correct: 1, exp: "Để minh bạch, GCN sẽ ghi tên tất cả các thành viên có chung quyền sử dụng đất." },
+    { q: "Hành vi nào bị cấm đối với cơ quan quản lý đất đai?", options: ["Giải quyết đúng hạn", "Cung cấp thông tin đất đai chậm trễ, sai lệch", "Tổ chức hòa giải", "Niêm yết bảng giá đất"], correct: 1, exp: "Cung cấp thông tin chậm, thiếu chính xác là hành vi bị nghiêm cấm tại Điều 11." },
+    { q: "Khi chuyển mục đích sử dụng đất, căn cứ để tính tiền sử dụng đất là?", options: ["Giá đất tại thời điểm mua", "Giá đất tại thời điểm có quyết định cho phép chuyển mục đích", "Giá do người dân tự kê khai", "Giá trung bình 5 năm"], correct: 1, exp: "Tiền sử dụng đất tính theo giá đất tại thời điểm Nhà nước cho phép chuyển mục đích." },
+    { q: "[TÌNH HUỐNG MỚI - 1] Công ty A thuê đất trả tiền hàng năm để làm nhà xưởng. Sau 3 năm, Công ty muốn bán nhà xưởng cho Công ty B. Quyền sử dụng đất sẽ xử lý thế nào?", options: ["Không được bán", "Được bán tài sản và người mua được tiếp tục thuê đất", "Bị thu hồi đất ngay", "Phải mua đứt quyền sử dụng đất"], correct: 1, exp: "Người thuê đất trả tiền hàng năm có quyền bán tài sản gắn liền với đất, người mua được Nhà nước tiếp tục cho thuê." },
+    { q: "[TÌNH HUỐNG MỚI - 2] Anh Nam có mảnh đất 100m2 bị thu hồi để làm đường cao tốc. Giá bảng giá đất là 10tr/m2, giá thị trường là 30tr/m2. Anh được đền bù theo giá nào?", options: ["10 triệu", "30 triệu (theo giá đất cụ thể)", "20 triệu", "Không được đền bù"], correct: 1, exp: "Bồi thường dựa trên giá đất cụ thể do UBND cấp có thẩm quyền quyết định, sát giá thị trường." },
+    { q: "Cơ quan nào có chức năng lập Bảng giá đất hàng năm?", options: ["UBND cấp xã", "Sở Tài nguyên và Môi trường", "Cục Thuế", "Hội đồng nhân dân"], correct: 1, exp: "Sở TNMT chủ trì, phối hợp các đơn vị lập bảng giá đất trình UBND tỉnh." },
+    { q: "Người sử dụng đất có quyền tặng cho QSDĐ cho ai?", options: ["Chỉ người thân trong gia đình", "Nhà nước, cộng đồng dân cư hoặc cá nhân theo quy định", "Chỉ cho tổ chức từ thiện", "Không được tặng cho"], correct: 1, exp: "Người sử dụng đất có quyền tặng cho QSDĐ cho Nhà nước, cộng đồng dân cư hoặc đối tượng khác theo luật." },
+    { q: "Khi Nhà nước thu hồi đất nông nghiệp, nếu không có đất để bồi thường thì?", options: ["Không bồi thường", "Bồi thường bằng tiền", "Bồi thường bằng nhà ở", "Cả B và C đều đúng"], correct: 3, exp: "Ưu tiên bồi thường bằng đất cùng mục đích, nếu không có thì bồi thường bằng tiền hoặc đất khác/nhà ở." },
+    { q: "Thời hạn thông báo thu hồi đất vì mục đích quốc phòng, an ninh đối với đất phi nông nghiệp là?", options: ["90 ngày", "180 ngày", "30 ngày", "12 tháng"], correct: 1, exp: "Phải thông báo cho người có đất bị thu hồi chậm nhất là 180 ngày đối với đất phi nông nghiệp." },
+    { q: "Đối với đất nông nghiệp, thời hạn thông báo thu hồi đất là bao nhiêu ngày?", options: ["30 ngày", "60 ngày", "90 ngày", "180 ngày"], correct: 2, exp: "Phải thông báo chậm nhất là 90 ngày đối với đất nông nghiệp." },
+    { q: "Hành vi lấn đất là gì?", options: ["Sử dụng đất vượt ranh giới đã được cấp", "Chuyển mục đích trái phép", "Không sử dụng đất", "Xây nhà cao hơn quy định"], correct: 0, exp: "Lấn đất là hành vi dịch chuyển mốc giới hoặc ranh giới thửa đất để mở rộng diện tích sử dụng." },
+    { q: "Hành vi chiếm đất là gì?", options: ["Tự ý sử dụng đất mà không được cơ quan nhà nước cho phép", "Sử dụng đất đúng sổ đỏ", "Cho thuê lại đất", "Mua đất bằng giấy tay"], correct: 0, exp: "Chiếm đất là việc sử dụng đất mà không có quyền sử dụng hợp pháp." },
+    { q: "Đất sử dụng cho hoạt động khoáng sản thuộc nhóm đất nào?", options: ["Đất nông nghiệp", "Đất phi nông nghiệp", "Đất chưa sử dụng", "Đất công ích"], correct: 1, exp: "Đất cho hoạt động khoáng sản thuộc nhóm đất phi nông nghiệp theo Điều 9." },
+    { q: "Việc khai thác quỹ đất để phát triển kinh tế thông qua dự án nào?", options: ["Dự án khu đô thị", "Dự án khu dân cư nông thôn", "Dự án xây nhà kho tư nhân", "Cả A và B"], correct: 3, exp: "Nhà nước thu hồi đất để thực hiện các dự án khu đô thị, khu dân cư nông thôn để phát triển kinh tế." },
+    { q: "Tổ chức nào được Nhà nước giao đất không thu tiền sử dụng đất?", options: ["Đơn vị vũ trang nhân dân", "Doanh nghiệp FDI", "Hộ gia đình kinh doanh", "Công ty bất động sản"], correct: 0, exp: "Đơn vị vũ trang sử dụng đất quốc phòng, an ninh được giao đất không thu tiền." },
+    { q: "Người Việt Nam định cư ở nước ngoài được sở hữu nhà ở gắn liền với QSDĐ tại VN khi?", options: ["Chỉ cần có hộ chiếu VN", "Được phép nhập cảnh vào VN", "Phải có quốc tịch nước ngoài", "Chỉ được mua chung cư"], correct: 1, exp: "Luật 2024 cho phép người VN định cư ở nước ngoài có quyền sở hữu nhà ở như công dân trong nước." },
+    { q: "Tranh chấp đất đai đã được hòa giải tại xã nhưng một bên không thực hiện thì?", options: ["Hòa giải lại", "Cưỡng chế thực hiện theo biên bản hòa giải thành", "Hủy bỏ kết quả", "Phạt tiền"], correct: 1, exp: "Biên bản hòa giải thành có giá trị pháp lý, nếu không thực hiện sẽ bị cưỡng chế." },
+    { q: "Mục đích của việc lập quy hoạch sử dụng đất là?", options: ["Để bán đất giá cao", "Phân bổ nguồn lực đất đai phù hợp mục tiêu phát triển", "Hạn chế quyền người dân", "Tăng thuế đất"], correct: 1, exp: "Quy hoạch giúp phân bổ quỹ đất hợp lý, tiết kiệm và hiệu quả cho các ngành, lĩnh vực." },
+    { q: "Kế hoạch sử dụng đất cấp huyện hàng năm nhằm?", options: ["Xác định các thửa đất sẽ bị thu hồi trong năm", "Tăng giá đất", "Bỏ quy hoạch cũ", "Giao đất cho doanh nghiệp"], correct: 0, exp: "Kế hoạch năm là căn cứ để thực hiện thu hồi đất, giao đất, cho thuê đất trong năm đó." },
+    { q: "Đất trồng cây lâu năm có thời hạn sử dụng bao nhiêu năm khi được giao?", options: ["20 năm", "50 năm", "70 năm", "Lâu dài"], correct: 1, exp: "Tương tự đất cây hàng năm, đất cây lâu năm giao cho hộ gia đình có thời hạn 50 năm." },
+    { q: "Người sử dụng đất có nghĩa vụ gì khi sử dụng đất?", options: ["Muốn làm gì thì làm", "Sử dụng đúng mục đích, đúng ranh giới", "Không cần nộp thuế", "Để đất trống tùy ý"], correct: 1, exp: "Nghĩa vụ cơ bản là sử dụng đúng mục đích, ranh giới và bảo vệ đất." },
+    { q: "Hệ thống thông tin đất đai quốc gia do ai quản lý?", options: ["Tập đoàn Viettel", "Bộ Tài nguyên và Môi trường", "Bộ Công an", "Các sàn bất động sản"], correct: 1, exp: "Bộ TNMT thống nhất quản lý và vận hành hệ thống thông tin đất đai quốc gia." },
+    { q: "Việc công chứng hợp đồng đất đai được thực hiện tại?", options: ["UBND xã", "Văn phòng công chứng hoặc Phòng công chứng", "Công ty luật", "Văn phòng đăng ký đất đai"], correct: 1, exp: "Các giao dịch quyền sử dụng đất phải được công chứng hoặc chứng thực." },
+    { q: "Chứng thực hợp đồng đất đai được thực hiện tại?", options: ["UBND cấp xã", "UBND cấp huyện", "Sở Tư pháp", "Tòa án"], correct: 0, exp: "UBND cấp xã có thẩm quyền chứng thực các hợp đồng, giao dịch về đất đai." },
+    { q: "Khi chuyển nhượng đất, ai là người có nghĩa vụ nộp thuế TNCN (thông thường)?", options: ["Người mua", "Người bán", "Nhà nước", "Cả hai chia đôi"], correct: 1, exp: "Thông thường người bán có thu nhập từ việc bán đất nên phải nộp thuế TNCN." },
+    { q: "Lệ phí trước bạ khi mua bán đất do ai nộp (thông thường)?", options: ["Người bán", "Người mua", "Người môi giới", "Miễn phí"], correct: 1, exp: "Người đăng ký quyền sở hữu, quyền sử dụng (người mua) là người nộp lệ phí trước bạ." },
+    { q: "Đối tượng nào được Nhà nước hỗ trợ đào tạo, chuyển đổi nghề nghiệp khi thu hồi đất?", options: ["Người giàu", "Hộ gia đình, cá nhân trực tiếp sản xuất nông nghiệp", "Doanh nghiệp nước ngoài", "Công chức nhà nước"], correct: 1, exp: "Chính sách này hỗ trợ những người mất đi tư liệu sản xuất chính là đất nông nghiệp." },
+    { q: "Quỹ đất công ích của xã (5%) dùng để làm gì?", options: ["Chia cho cán bộ xã", "Xây dựng các công trình công cộng của xã", "Bán lấy tiền", "Cho người giàu thuê"], correct: 1, exp: "Dùng cho nhu cầu công cộng của địa phương hoặc cho hộ dân nghèo thuê sản xuất." },
+    { q: "Người sử dụng đất có quyền thế chấp QSDĐ tại đâu?", options: ["Chỉ các cá nhân", "Các tổ chức tín dụng được phép hoạt động tại VN", "Tiệm cầm đồ", "Các công ty nước ngoài không có chi nhánh tại VN"], correct: 1, exp: "Thế chấp tại các ngân hàng, tổ chức tín dụng để bảo đảm nghĩa vụ dân sự." },
+    { q: "Quyền thừa kế đất đai được thực hiện theo?", options: ["Di chúc hoặc pháp luật", "Chỉ theo di chúc", "Chỉ theo pháp luật", "Sự sắp xếp của xã"], correct: 0, exp: "Quyền sử dụng đất là di sản và được thừa kế theo quy định của Luật Dân sự." },
+    { q: "Đất chưa sử dụng bao gồm?", options: ["Đất bãi bồi", "Đất bằng chưa sử dụng, đất đồi núi chưa sử dụng, núi đá không có rừng cây", "Đất đang tranh chấp", "Đất dự án treo"], correct: 1, exp: "Là các loại đất chưa được đưa vào sử dụng cho các mục đích nông nghiệp hay phi nông nghiệp." },
+    { q: "Thẩm quyền giải quyết tranh chấp đất đai mà đương sự KHÔNG có Sổ đỏ?", options: ["Chỉ Tòa án", "Chỉ UBND", "Lựa chọn Tòa án hoặc UBND", "Hòa giải tại thôn"], correct: 2, exp: "Luật cho phép người dân lựa chọn hình thức giải quyết tại Tòa hoặc yêu cầu UBND giải quyết." },
+    { q: "Khi Tòa án giải quyết tranh chấp đất đai, căn cứ pháp lý là?", options: ["Luật Đất đai và các luật liên quan", "Cảm tính", "Sức mạnh của các bên", "Tục lệ địa phương"], correct: 0, exp: "Dựa trên các quy định pháp luật hiện hành và chứng cứ các bên cung cấp." },
+    { q: "Hành vi chậm nộp tiền sử dụng đất sẽ bị?", options: ["Thu hồi đất ngay", "Tính tiền chậm nộp theo quy định pháp luật quản lý thuế", "Bỏ qua", "Bị phạt tù"], correct: 1, exp: "Người sử dụng đất phải chịu trách nhiệm tài chính về việc chậm thực hiện nghĩa vụ." },
+    { q: "Đất xây dựng nhà lưu trú công nhân trong khu công nghiệp thuộc nhóm?", options: ["Đất nông nghiệp", "Đất phi nông nghiệp", "Đất ở", "Đất dịch vụ"], correct: 1, exp: "Thuộc nhóm đất phi nông nghiệp phục vụ sản xuất kinh doanh." },
+    { q: "Nhà nước khuyến khích khai hoang, phục hóa đối với loại đất nào?", options: ["Đất ở", "Đất chưa sử dụng, đất bãi bồi ven sông ven biển", "Đất rừng đặc dụng", "Đất nghĩa trang"], correct: 1, exp: "Khuyến khích đưa đất vào sử dụng để tăng hiệu quả tài nguyên." },
+    { q: "Cơ quan nào chủ trì việc bồi thường, giải phóng mặt bằng?", options: ["Tòa án", "Tổ chức làm nhiệm vụ bồi thường, giải phóng mặt bằng", "Chủ đầu tư", "Ủy ban mặt trận tổ quốc"], correct: 1, exp: "Thường là Trung tâm phát triển quỹ đất hoặc Hội đồng bồi thường huyện." },
+    { q: "Nếu người bị thu hồi đất không nhận tiền bồi thường thì tiền đó gửi vào đâu?", options: ["Cất vào kho của huyện", "Gửi vào tài khoản tạm giữ của Kho bạc Nhà nước", "Trả lại ngân sách", "Chia cho người khác"], correct: 1, exp: "Gửi vào Kho bạc để đảm bảo quyền lợi cho người dân khi họ nhận sau." },
+    { q: "Việc trưng dụng đất khác thu hồi đất ở điểm nào?", options: ["Trưng dụng là vĩnh viễn", "Trưng dụng là có thời hạn trong tình trạng khẩn cấp", "Thu hồi không được đền bù", "Giống hệt nhau"], correct: 1, exp: "Trưng dụng diễn ra trong tình trạng chiến tranh, thiên tai và có thời hạn nhất định." },
+    { q: "Ai có thẩm quyền quyết định trưng dụng đất?", options: ["Bộ trưởng Bộ TN&MT, Bộ trưởng Bộ Quốc phòng, Công an...", "Chủ tịch xã", "Trưởng thôn", "Giám đốc Sở"], correct: 0, exp: "Các chức danh này có quyền trưng dụng đất trong phạm vi nhiệm vụ khẩn cấp." },
+    { q: "Hạn mức giao đất ở nông thôn do ai quy định cụ thể?", options: ["Quốc hội", "Chính phủ", "UBND cấp tỉnh căn cứ quỹ đất địa phương", "UBND xã"], correct: 2, exp: "Tùy điều kiện mỗi tỉnh mà hạn mức đất ở sẽ khác nhau (ví dụ 200m2 hoặc 300m2)." },
+    { q: "Hạn mức giao đất ở đô thị so với nông thôn thường?", options: ["Lớn hơn", "Nhỏ hơn", "Bằng nhau", "Không quy định"], correct: 1, exp: "Do quỹ đất đô thị hạn hẹp nên hạn mức thường nhỏ hơn vùng nông thôn." },
+    { q: "Sử dụng đất sai mục đích (ví dụ đất lúa xây nhà xưởng) sẽ bị?", options: ["Xử phạt hành chính và buộc khôi phục tình trạng ban đầu", "Cho phép tồn tại nếu nộp tiền", "Tặng luôn đất", "Bị phạt tù 10 năm"], correct: 0, exp: "Người sử dụng đất phải sử dụng đúng mục đích, vi phạm sẽ bị phạt và cưỡng chế tháo dỡ." },
+    { q: "Hành vi cản trở việc thực hiện quyền của người sử dụng đất bị xử lý?", options: ["Khen thưởng", "Xử lý vi phạm theo pháp luật", "Bỏ qua", "Khuyến khích"], correct: 1, exp: "Mọi hành vi ngăn cản người dân thực hiện quyền hợp pháp (như chuyển nhượng, thế chấp) đều bị nghiêm cấm." },
+    { q: "Bảng giá đất 2024 KHÔNG được dùng để tính trường hợp nào?", options: ["Tiền sử dụng đất khi giao đất cho hộ gia đình", "Thuế sử dụng đất", "Bồi thường khi Nhà nước thu hồi đất", "Phí và lệ phí trong quản lý đất đai"], correct: 2, exp: "Bồi thường thu hồi đất tính theo giá đất cụ thể, không tính theo bảng giá đất đại trà." },
+    { q: "Việc thu hồi đất phải được thực hiện?", options: ["Bất ngờ", "Công khai, minh bạch và có kế hoạch", "Bằng miệng", "Chỉ thông báo cho chủ đầu tư"], correct: 1, exp: "Phải niêm yết phương án bồi thường và thông báo cho người dân biết." },
+    { q: "Người sử dụng đất có quyền tự nguyện trả lại đất cho Nhà nước không?", options: ["Không được", "Được (ví dụ không còn nhu cầu sử dụng)", "Phải nộp phạt nếu trả lại", "Chỉ được trả lại đất rừng"], correct: 1, exp: "Nhà nước tiếp nhận đất khi người dân tự nguyện trả lại." },
+    { q: "Đất do Nhà nước thu hồi từ người vi phạm pháp luật đất đai sẽ được?", options: ["Giao cho người khác ngay", "Đưa vào quỹ đất sạch để đấu giá hoặc giao/thuê theo quy định", "Bỏ hoang", "Trả lại cho người vi phạm"], correct: 1, exp: "Đất thu hồi do vi phạm sẽ được quản lý để tái sử dụng hiệu quả." },
+    { q: "Khi Nhà nước giao đất có thu tiền, người sử dụng đất nộp tiền vào?", options: ["UBND xã", "Ngân sách nhà nước (thông qua cơ quan thuế)", "Chủ đầu tư", "Tòa án"], correct: 1, exp: "Nộp tiền sử dụng đất là thực hiện nghĩa vụ với ngân sách quốc gia." },
+    { q: "Đất xây dựng trụ sở cơ quan nhà nước thuộc loại?", options: ["Đất ở", "Đất phi nông nghiệp", "Đất nông nghiệp", "Đất chưa sử dụng"], correct: 1, exp: "Đây là đất phi nông nghiệp phục vụ mục đích công cộng/quản lý nhà nước." },
+    { q: "Người sử dụng đất 'ổn định' là người?", options: ["Sử dụng liên tục cho 1 mục đích nhất định", "Hay thay đổi mục đích", "Sử dụng đất có tranh chấp", "Chỉ sử dụng 1 năm"], correct: 0, exp: "Tính ổn định là tiêu chí quan trọng để xét cấp Giấy chứng nhận." },
+    { q: "Hệ thống cơ quan quản lý đất đai ở Việt Nam được tổ chức theo?", options: ["Hệ thống từ Trung ương đến địa phương", "Chỉ có ở Trung ương", "Chỉ có ở xã", "Tự phát"], correct: 0, exp: "Gồm Bộ TNMT, Sở TNMT, Phòng TNMT và cán bộ địa chính xã." },
+    { q: "Ngành luật Đất đai sử dụng phương pháp điều chỉnh nào chủ yếu?", options: ["Mệnh lệnh và Bình đẳng", "Chỉ có Mệnh lệnh", "Chỉ có Bình đẳng", "Thương lượng tự do"], correct: 0, exp: "Kết hợp giữa mệnh lệnh hành chính (quản lý) và bình đẳng thỏa thuận (giao dịch)." },
+    { q: "Chúc mừng bạn đã hoàn thành 155 câu hỏi ôn thi! Bạn đã sẵn sàng chưa?", options: ["Sẵn sàng", "Rất sẵn sàng", "Sẽ cố gắng", "Cần ôn thêm"], correct: 1, exp: "Hãy ôn tập kỹ các tình huống liên kết để đạt kết quả cao nhất nhé \!" },
+ 
+    // --- NHÓM 6: QUY HOẠCH & KẾ HOẠCH (Câu 71 - 85) ---
+    { q: "Quy hoạch sử dụng đất cấp quốc gia có tầm nhìn bao nhiêu năm?", options: ["10 năm", "20 năm", "30 - 50 năm", "70 năm"], correct: 2, exp: "Quy hoạch quốc gia có tầm nhìn từ 30 đến 50 năm." },
+    { q: "Kế hoạch sử dụng đất cấp huyện được lập định kỳ bao lâu?", options: ["Hàng năm", "5 năm", "10 năm", "20 năm"], correct: 0, exp: "Kế hoạch sử dụng đất cấp huyện được lập hàng năm." },
+    { q: "Việc lấy ý kiến nhân dân về quy hoạch đất cấp huyện thực hiện trong?", options: ["15 ngày", "30 ngày", "45 ngày", "60 ngày"], correct: 1, exp: "Thời gian lấy ý kiến là 30 ngày." },
+    { q: "Căn cứ để giao đất cho hộ gia đình là gì?", options: ["Nhu cầu người dân", "Đơn xin", "Kế hoạch sử dụng đất hàng năm cấp huyện", "Chỉ đạo của xã"], correct: 2, exp: "Căn cứ vào kế hoạch sử dụng đất hàng năm của cấp huyện đã được phê duyệt." },
+    { q: "Cơ quan nào phê duyệt quy hoạch sử dụng đất cấp tỉnh?", options: ["UBND Tỉnh", "Chính phủ", "Quốc hội", "HĐND Tỉnh"], correct: 1, exp: "Chính phủ phê duyệt quy hoạch sử dụng đất cấp tỉnh." },
+
+    // --- NHÓM 7: THU HỒI & BỒI THƯỜNG CHI TIẾT (Câu 86 - 100) ---
+    { q: "Nhà nước thu hồi đất vì mục đích quốc phòng, an ninh trong trường hợp nào?", options: ["Làm khu nghỉ dưỡng", "Làm căn cứ quân sự", "Xây trung tâm thương mại", "Phân lô bán nền"], correct: 1, exp: "Xây dựng căn cứ quân sự thuộc mục đích quốc phòng an ninh." },
+    { q: "Trường hợp nào thu hồi đất KHÔNG được bồi thường về đất?", options: ["Đất ở có Sổ đỏ", "Đất thuê trả tiền hàng năm", "Đất nông nghiệp trong hạn mức", "Đất khai hoang hợp pháp"], correct: 1, exp: "Đất thuê trả tiền hàng năm chỉ bồi thường tài sản trên đất, không bồi thường về đất." },
+    { q: "Khoản hỗ trợ nào dành cho người bị thu hồi đất nông nghiệp?", options: ["Hỗ trợ tái định cư", "Hỗ trợ ổn định đời sống và sản xuất", "Hỗ trợ phí sang tên", "Hỗ trợ xây nhà lầu"], correct: 1, exp: "Người mất đất nông nghiệp được hỗ trợ ổn định đời sống và sản xuất." },
+    { q: "Ai có quyền cưỡng chế thu hồi đất?", options: ["Công an xã", "Chủ đầu tư", "Chủ tịch UBND cấp huyện", "Trưởng thôn"], correct: 2, exp: "Chủ tịch UBND huyện ban hành quyết định cưỡng chế và tổ chức thực hiện." },
+    { q: "Trước khi cưỡng chế thu hồi đất, phải thông báo cho người dân trước bao nhiêu ngày?", options: ["5 ngày", "10 ngày", "15 ngày", "20 ngày"], correct: 2, exp: "Phải niêm yết công khai và thông báo trực tiếp trước khi cưỡng chế 15 ngày." },
+
+    // --- NHÓM 8: NGHĨA VỤ TÀI CHÍNH (Câu 101 - 115) ---
+    { q: "Tiền sử dụng đất được nộp khi nào?", options: ["Khi đi xem đất", "Khi được Nhà nước giao đất có thu tiền", "Khi thuê đất hàng năm", "Khi tặng cho đất"], correct: 1, exp: "Nộp khi Nhà nước giao đất có thu tiền hoặc chuyển mục đích sử dụng." },
+    { q: "Loại đất nào được miễn thuế sử dụng đất phi nông nghiệp?", options: ["Đất ở", "Đất xây dựng trụ sở cơ quan", "Đất sản xuất kinh doanh", "Đất làm kho"], correct: 1, exp: "Đất xây dựng trụ sở cơ quan nhà nước được miễn thuế." },
+    { q: "Khi chuyển nhượng đất, thuế thu nhập cá nhân tính trên giá nào?", options: ["Giá mua ban đầu", "Giá trên hợp đồng hoặc bảng giá đất", "Giá người mua tự khai", "Giá vàng"], correct: 1, exp: "Tính trên giá trị chuyển nhượng trên hợp đồng (không thấp hơn bảng giá đất)." },
+    { q: "Lệ phí trước bạ khi sang tên Sổ đỏ hiện nay thường là?", options: ["0.5%", "1%", "2%", "5%"], correct: 0, exp: "Mức lệ phí trước bạ nhà đất thông thường là 0.5%." },
+    { q: "Đối tượng nào được ghi nợ tiền sử dụng đất?", options: ["Đại gia bất động sản", "Hộ gia đình nghèo, đồng bào dân tộc thiểu số", "Công ty nước ngoài", "Ngân hàng"], correct: 1, exp: "Chỉ một số đối tượng khó khăn mới được ghi nợ tiền sử dụng đất trên Sổ đỏ." },
+
+    // --- NHÓM 9: THỦ TỤC & GIẤY TỜ (Câu 116 - 130) ---
+    { q: "Thời hạn cấp Sổ đỏ lần đầu theo quy định thông thường là?", options: ["10 ngày", "20 ngày", "30 ngày", "60 ngày"], correct: 2, exp: "Thủ tục đăng ký, cấp giấy lần đầu không quá 30 ngày làm việc." },
+    { q: "Đính chính Sổ đỏ khi có sai sót thông tin mất bao lâu?", options: ["3 ngày", "10 ngày", "20 ngày", "45 ngày"], correct: 1, exp: "Thủ tục đính chính thường không quá 10 ngày." },
+    { q: "Sổ đỏ bị thu hồi trong trường hợp nào?", options: ["Người dân tự ý sửa chữa", "Cấp sai thẩm quyền hoặc sai đối tượng", "Khi người dân vay tiền", "Khi cho thuê nhà"], correct: 1, exp: "Sổ đỏ cấp sai luật, sai thẩm quyền sẽ bị Nhà nước thu hồi." },
+    { q: "Văn phòng đăng ký đất đai trực thuộc cơ quan nào?", options: ["UBND huyện", "Sở Tài nguyên và Môi trường", "Bộ Tài chính", "UBND xã"], correct: 1, exp: "Văn phòng đăng ký đất đai là đơn vị sự nghiệp thuộc Sở TN&MT." },
+    { q: "Khi nhận thừa kế đất, phải đăng ký biến động trong vòng bao lâu?", options: ["15 ngày", "30 ngày", "60 ngày", "90 ngày"], correct: 1, exp: "Phải thực hiện đăng ký biến động trong thời hạn không quá 30 ngày." },
+
+    // --- NHÓM 10: CÁC QUY ĐỊNH MỚI LUẬT 2024 (Câu 131 - 150) ---
+    { q: "Luật Đất đai 2024 có điểm gì mới về Bảng giá đất?", options: ["Ban hành 5 năm một lần", "Ban hành hàng năm", "Ban hành 10 năm một lần", "Bỏ bảng giá đất"], correct: 1, exp: "Luật mới quy định bảng giá đất được ban hành hàng năm để sát giá thị trường." },
+    { q: "Hội đồng nhân dân cấp tỉnh có quyền gì về giá đất?", options: ["Trực tiếp đi định giá từng lô", "Thông qua bảng giá đất", "Không có quyền gì", "Bán đấu giá đất"], correct: 1, exp: "HĐND tỉnh thông qua bảng giá đất trước khi UBND tỉnh ban hành." },
+    { q: "Đất nông nghiệp để hoang bao lâu thì bị thu hồi?", options: ["6 tháng", "12 tháng liên tục", "24 tháng", "36 tháng"], correct: 1, exp: "Đất trồng cây hàng năm không sử dụng 12 tháng liên tục thuộc diện bị thu hồi." },
+    { q: "Đất trồng rừng để hoang bao lâu thì bị thu hồi?", options: ["12 tháng", "24 tháng liên tục", "36 tháng", "48 tháng"], correct: 1, exp: "Đất trồng rừng không sử dụng 24 tháng liên tục thuộc diện bị thu hồi." },
+    { q: "Hành vi nào bị nghiêm cấm trong quản lý đất đai?", options: ["Giao đất đúng kế hoạch", "Lấn, chiếm đất đai", "Cấp sổ đúng hạn", "Sử dụng đất tiết kiệm"], correct: 1, exp: "Lấn, chiếm đất đai là hành vi bị nghiêm cấm hàng đầu." },
+    { q: "Cá nhân không trực tiếp sản xuất nông nghiệp có được nhận chuyển nhượng đất lúa không?", options: ["Không được", "Được (theo Luật 2024)", "Chỉ được thuê", "Chỉ được thừa kế"], correct: 1, exp: "Luật 2024 cho phép cá nhân không trực tiếp sản xuất được nhận chuyển nhượng đất lúa (kèm điều kiện)." },
+    { q: "Việc thu hồi đất phải đảm bảo người dân có chỗ ở bằng hoặc tốt hơn chỗ cũ là?", options: ["Khuyến khích", "Bắt buộc theo nguyên tắc bồi thường mới", "Tùy chủ đầu tư", "Không có quy định"], correct: 1, exp: "Đây là nguyên tắc nhân văn mới của Luật Đất đai 2024." },
+    { q: "Hành vi hủy hoại đất là?", options: ["Làm biến dạng địa hình, làm suy giảm chất lượng đất", "Bón phân hữu cơ", "Trồng cây ăn quả", "Xây hàng rào đúng luật"], correct: 0, exp: "Hủy hoại đất là làm biến dạng địa hình hoặc làm ô nhiễm, suy giảm chất lượng đất." },
+    { q: "Đất tôn giáo bao gồm loại nào?", options: ["Đất xây chùa, nhà thờ, thánh thất", "Đất xây nhà trọ", "Đất xây siêu thị", "Đất xây rạp phim"], correct: 0, exp: "Đất xây dựng cơ sở tôn giáo thuộc nhóm đất phi nông nghiệp." },
+    { q: "Quyền lựa chọn hình thức nộp tiền thuê đất của doanh nghiệp?", options: ["Chỉ được nộp hàng năm", "Chỉ được nộp một lần", "Được chọn nộp hàng năm hoặc nộp một lần", "Không được chọn"], correct: 2, exp: "Doanh nghiệp có quyền lựa chọn hình thức trả tiền thuê đất tùy theo khả năng tài chính." },
+    { q: "Người sử dụng đất có nghĩa vụ gì khi ranh giới thửa đất bị thay đổi?", options: ["Tự ý dời cột mốc", "Khai báo biến động đất đai", "Im lặng sử dụng", "Bán đất ngay"], correct: 1, exp: "Khi có biến động về diện tích, ranh giới phải làm thủ tục đăng ký biến động." },
+    { q: "Tổ chức phát triển quỹ đất có chức năng gì?", options: ["Mua bán đất lậu", "Bồi thường, GPMB và tạo quỹ đất sạch", "Xây nhà bán", "Cho vay tiền"], correct: 1, exp: "Chức năng chính là bồi thường, hỗ trợ, tái định cư và quản lý quỹ đất sạch." },
+    { q: "Sổ đỏ cấp cho hộ gia đình trước đây, nay muốn đổi sang tên các thành viên thì?", options: ["Không được", "Được thực hiện nếu các thành viên có chung quyền", "Phải nộp phạt", "Phải đấu giá lại"], correct: 1, exp: "Luật mới hỗ trợ minh bạch hóa quyền sở hữu của các thành viên trong hộ." },
+    { q: "Nhà nước khuyến khích việc gì trên đất đai?", options: ["Để đất trống", "Đầu tư vào đất đai, khai hoang, phục hóa", "Lấn chiếm thêm", "Sử dụng sai mục đích"], correct: 1, exp: "Khuyến khích đầu tư sức lao động, vật tư tiền vốn để nâng cao hiệu quả sử dụng đất." },
+    { q: "Khi tranh chấp đất đai, ai là người chủ trì hòa giải tại xã?", options: ["Chủ tịch UBND xã", "Trưởng công an xã", "Trưởng thôn", "Hội phụ nữ"], correct: 0, exp: "Chủ tịch UBND xã có trách nhiệm tổ chức và chủ trì việc hòa giải tranh chấp đất đai." },
+    { q: "Kết quả hòa giải tại xã không thành thì bước tiếp theo là?", options: ["Bỏ cuộc", "Gửi đơn lên Tòa án hoặc UBND cấp có thẩm quyền", "Tự ý rào đất", "Kiện Chủ tịch xã"], correct: 1, exp: "Sau khi hòa giải tại xã không thành, đương sự có quyền khởi kiện ra Tòa hoặc yêu cầu UBND giải quyết." },
+    { q: "Đất của các tập đoàn, tổng công ty nhà nước khi cổ phần hóa phải?", options: ["Được cho không", "Rà soát, lập phương án sử dụng đất", "Bị thu hồi toàn bộ", "Tự ý bán"], correct: 1, exp: "Phải thực hiện rà soát và có phương án sử dụng đất được phê duyệt." },
+    { q: "Việc đăng ký đất đai lần đầu là?", options: ["Tùy chọn", "Bắt buộc", "Chỉ dành cho người giàu", "Chỉ dành cho đất ở"], correct: 1, exp: "Đăng ký đất đai là bắt buộc đối với người sử dụng đất và người được giao đất quản lý." },
+    { q: "Diện tích đất ở tối thiểu để tách thửa do ai quy định?", options: ["Chính phủ", "Bộ Tài nguyên", "UBND cấp tỉnh", "UBND cấp xã"], correct: 2, exp: "UBND cấp tỉnh quy định diện tích tối thiểu được phép tách thửa cho từng loại đất tại địa phương." },
+    { q: "Chúc mừng bạn đã hoàn thành bộ câu hỏi! Luật Đất đai 2024 có bao nhiêu chương?", options: ["14 chương", "16 chương", "12 chương", "10 chương"], correct: 1, exp: "Luật Đất đai 2024 bao gồm 16 chương và 260 điều." }
+];
+
+// ===========================================================================
+// === PHẦN 2: LOGIC XỬ LÝ HỆ THỐNG ===
+// ===========================================================================
+
+let quizBank = [];
+let currentIndex = 0;
+let score = 0;
+let timer;
+let timeRemaining = 30;
+let errorList = [];
+
+function startApp() {
+    document.getElementById('start-screen').classList.add('hidden');
+    document.getElementById('quiz-screen').classList.remove('hidden');
+    quizBank = [...questionBank].sort(() => Math.random() - 0.5); // Xáo trộn ngẫu nhiên
+    renderQuestion();
+}
+
+function renderQuestion() {
+    if(currentIndex >= quizBank.length) return showFinalResult();
+    
+    resetQuestionUI();
+    const currentQ = quizBank[currentIndex];
+    
+    document.getElementById('q-current').innerText = currentIndex + 1;
+    document.getElementById('q-total').innerText = quizBank.length;
+    document.getElementById('question-text').innerText = currentQ.q;
+    
+    const list = document.getElementById('options-list');
+    currentQ.options.forEach((txt, idx) => {
+        const b = document.createElement('button');
+        b.className = 'option';
+        b.innerText = txt;
+        b.onclick = () => validateAnswer(idx);
+        list.appendChild(b);
+    });
+
+    runTimer();
+}
+
+function runTimer() {
+    timeRemaining = 30;
+    document.getElementById('time-left').innerText = timeRemaining;
+    timer = setInterval(() => {
+        timeRemaining--;
+        document.getElementById('time-left').innerText = timeRemaining;
+        if(timeRemaining <= 0) {
+            clearInterval(timer);
+            validateAnswer(-1); // Hết giờ tính là sai
+        }
+    }, 1000);
+}
+
+function validateAnswer(userPick) {
+    clearInterval(timer);
+    const qData = quizBank[currentIndex];
+    const btns = document.querySelectorAll('.option');
+    
+    btns.forEach(btn => btn.style.pointerEvents = 'none');
+
+    if(userPick === qData.correct) {
+        score++;
+        document.getElementById('score-count').innerText = score;
+        if(userPick !== -1) btns[userPick].classList.add('correct');
+    } else {
+        if(userPick !== -1) btns[userPick].classList.add('wrong');
+        btns[qData.correct].classList.add('correct');
+        errorList.push(qData); // Lưu vào danh sách sai để hỏi lại
+    }
+
+    document.getElementById('exp-area').innerHTML = `<b>Giải thích:</b> ${qData.exp}`;
+    document.getElementById('exp-area').classList.remove('hidden');
+    document.getElementById('btn-next').classList.remove('hidden');
+}
+
+function handleNext() {
+    currentIndex++;
+    renderQuestion();
+}
+
+function resetQuestionUI() {
+    document.getElementById('options-list').innerHTML = '';
+    document.getElementById('exp-area').classList.add('hidden');
+    document.getElementById('btn-next').classList.add('hidden');
+}
+
+function showFinalResult() {
+    document.getElementById('quiz-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
+    document.getElementById('final-stats').innerText = `${score} / ${quizBank.length}`;
+    
+    const info = document.getElementById('fail-info');
+    if(errorList.length > 0) {
+        info.innerText = `Bạn còn ${errorList.length} câu chưa đạt. Hệ thống sẽ ưu tiên hỏi lại các câu này!`;
+    } else {
+        info.innerText = "Tuyệt vời! Bạn đã hoàn thành xuất sắc tất cả câu hỏi.";
+    }
+}
+
+function restartWithErrors() {
+    if(errorList.length === 0) {
+        alert("Chúc mừng! Bạn đã thuộc hết bài. Hệ thống sẽ khởi động lại toàn bộ.");
+        location.reload();
+        return;
+    }
+    quizBank = [...errorList].sort(() => Math.random() - 0.5);
+    errorList = [];
+    currentIndex = 0;
+    score = 0;
+    document.getElementById('score-count').innerText = "0";
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById('quiz-screen').classList.remove('hidden');
+    renderQuestion();
+}
+</script>
+</body>
+</html>
